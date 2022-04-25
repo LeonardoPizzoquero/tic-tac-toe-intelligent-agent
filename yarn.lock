@@ -2229,7 +2229,7 @@ supports-preserve-symlinks-flag@^1.0.0:
 
 tau-prolog@^0.3.2:
   version "0.3.2"
-  resolved "https://registry.npmjs.org/tau-prolog/-/tau-prolog-0.3.2.tgz"
+  resolved "https://registry.yarnpkg.com/tau-prolog/-/tau-prolog-0.3.2.tgz#f4f0158ae1ee4ad5a209dd2c24d8967d29abdc37"
   integrity sha512-DlC8MBYtDEdfX0EdD5eNV3W7uPkqUO0vfck/fawt2lH85exj2rKiKxDkmkPa6DVg2thxnDxI+8UbxHs7rXb4Fg==
   dependencies:
     qunit "^2.11.1"

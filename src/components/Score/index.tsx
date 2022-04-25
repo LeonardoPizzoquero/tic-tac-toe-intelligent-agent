@@ -25,7 +25,7 @@ export function Score({ agent, draw, player }: ScoreProps) {
 
       <div>
         <span>
-          COMPUTADOR (<FiCircle size={16} />)
+          AGENTE (<FiCircle size={16} />)
         </span>
         <strong>{agent}</strong>
       </div>

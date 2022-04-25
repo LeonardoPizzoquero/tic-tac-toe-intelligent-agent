@@ -1,9 +1,13 @@
-import { Children, useCallback, useEffect, useState } from 'react';
+import { Children, useCallback, useMemo, useState } from 'react';
+import { minimax } from './utils/minimax';
+
+import { patterns } from './utils/patterns';
 
 import { Board } from './components/Board';
 import { Score } from './components/Score';
 import { Square } from './components/Square';
-import { patterns } from './utils/patterns';
+
+declare const pl: any;
 
 function App() {
   const [board, setBoard] = useState(Array(9).fill(''));
@@ -14,6 +18,10 @@ function App() {
     O: 0,
     draw: 0,
   });
+
+  const session = useMemo(() => {
+    return pl.create(100000);
+  }, []);
 
   const restartGame = useCallback(() => {
     setBoard(Array(9).fill(''));
@@ -53,78 +61,102 @@ function App() {
     [],
   );
 
-  const handlePlay = useCallback(
-    (index: number) => {
-      if (board[index] !== '' || gameOver) return;
+  const hasWinner = useCallback(
+    (currentBoard: string[]) => {
+      const [won, player, winnerPattern] = checkWinner(currentBoard);
 
-      let currentBoard = board.map((square, idx) =>
-        index === idx ? 'X' : square,
-      );
-
-      const notEmptySquares = currentBoard.reduce((previous, current, idx) => {
-        if (current === '') return [...previous, idx];
-
-        return previous;
-      }, []);
-
-      const [xWon, player, winnerPattern] = checkWinner(currentBoard);
-
-      if (xWon) {
+      if (won) {
         setResults(oldState =>
-          player === 'X'
+          player === 'x'
             ? { ...oldState, X: oldState.X + 1 }
             : { ...oldState, O: oldState.O + 1 },
         );
-
-        setBoard(currentBoard);
 
         setPattern(winnerPattern);
 
         setGameOver(true);
-
-        return;
-      }
-
-      const randomMove =
-        notEmptySquares[Math.floor(Math.random() * notEmptySquares.length)];
-
-      currentBoard = currentBoard.map((square, idx) =>
-        randomMove === idx ? 'O' : square,
-      );
-
-      const [hasWinner, winner, winningPattern] = checkWinner(currentBoard);
-
-      if (hasWinner) {
-        setResults(oldState =>
-          winner === 'X'
-            ? { ...oldState, X: oldState.X + 1 }
-            : { ...oldState, O: oldState.O + 1 },
-        );
-
-        setGameOver(true);
-
-        setPattern(winningPattern);
       }
 
       setBoard(currentBoard);
+
+      return won;
     },
-    [board, checkWinner, gameOver],
+    [checkWinner],
   );
 
-  useEffect(() => {
-    if (!gameOver) {
-      const tie = board.every(square => square !== '');
+  const handleDraw = useCallback(
+    (currentBoard: string[]) => {
+      const tie = currentBoard.every(square => square !== '');
+      const [won] = checkWinner(currentBoard);
 
-      if (tie) {
+      if (tie && !won) {
         setResults(oldState => ({ ...oldState, draw: oldState.draw + 1 }));
 
+        setBoard(currentBoard);
+
         setGameOver(true);
+      } else {
+        hasWinner(currentBoard);
       }
-    }
-  }, [board, gameOver]);
+
+      return tie;
+    },
+    [checkWinner, hasWinner],
+  );
+
+  const handlePlay = useCallback(
+    (index: number) => {
+      if (board[index] !== '' || gameOver) return;
+
+      const currentBoard = board.map((square, idx) =>
+        index === idx ? 'x' : square,
+      );
+
+      const draw = handleDraw(currentBoard);
+
+      if (draw) return;
+
+      const xWon = hasWinner(currentBoard);
+
+      if (xWon) return;
+
+      session.consult(minimax, {
+        success() {
+          session.query(
+            `minimax([${currentBoard
+              .map(position => (position === '' ? 'n' : position))
+              .join()}], NextMove).`,
+            {
+              success() {
+                session.answers((x: any) => {
+                  if (!session.format_answer(x).split('=')[1]) return;
+
+                  const nextMove = session
+                    .format_answer(x)
+                    .split('=')[1]
+                    .replace('.', '')
+                    .trim()
+                    .replace('[', '')
+                    .replace(']', '')
+                    .split(',');
+
+                  const newBoard = nextMove.map((position: string) =>
+                    position === 'n' ? '' : position,
+                  );
+
+                  hasWinner(newBoard);
+                });
+              },
+            },
+          );
+        },
+      });
+    },
+    [board, gameOver, handleDraw, hasWinner, session],
+  );
 
   return (
-    <div className="App">
+    <>
       <Score agent={results.O} draw={results.draw} player={results.X} />
 
       <Board>
@@ -139,7 +171,7 @@ function App() {
           )),
         )}
       </Board>
-    </div>
+    </>
   );
 }
 

@@ -17,8 +17,8 @@ export function Square({ value, positionWon, gameOver, ...rest }: SquareProps) {
       gameOver={gameOver}
       {...rest}
     >
-      {value === 'X' && <FiX />}
-      {value === 'O' && <FiCircle />}
+      {value === 'x' && <FiX />}
+      {value === 'o' && <FiCircle />}
     </Container>
   );
 }
