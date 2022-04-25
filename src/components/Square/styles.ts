@@ -19,16 +19,23 @@ export const Container = styled.button<ContainerProps>`
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  font-size: 8rem;
+  font-size: 4rem;
   background: none;
   border: none;
   color: #2f136d;
   border-top: 4px solid #fff;
   border-left: 4px solid #fff;
   transition: all 0.3s;
-  height: 200px;
+  height: 100px;
   opacity: ${({ gameOver, positionWon }) =>
     gameOver && !positionWon ? 0.5 : 1};
+  min-width: 100px;
+
+  @media (min-width: 640px) {
+    min-width: 198px;
+    min-height: 200px;
+    font-size: 8rem;
+  }
 
   svg {
     ${({ gameOver, positionWon }) =>

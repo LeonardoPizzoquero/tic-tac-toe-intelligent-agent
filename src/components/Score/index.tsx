@@ -1,5 +1,3 @@
-import { FiCircle, FiX } from 'react-icons/fi';
-
 import { Container } from './styles';
 
 type ScoreProps = {
@@ -12,9 +10,7 @@ export function Score({ agent, draw, player }: ScoreProps) {
   return (
     <Container>
       <div>
-        <span>
-          JOGADOR (<FiX size={20} />)
-        </span>
+        <span>JOGADOR (x)</span>
         <strong>{player}</strong>
       </div>
 
@@ -24,9 +20,7 @@ export function Score({ agent, draw, player }: ScoreProps) {
       </div>
 
       <div>
-        <span>
-          AGENTE (<FiCircle size={16} />)
-        </span>
+        <span>AGENTE (o)</span>
         <strong>{agent}</strong>
       </div>
     </Container>

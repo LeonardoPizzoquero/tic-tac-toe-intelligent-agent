@@ -12,13 +12,16 @@ export default createGlobalStyle`
     height: 100vh;
     background: #000;
     color: #FFF;
+    font-family: 'Roboto', sans-serif;
     -webkit-font-smoothing: antialiased;
     background-image: url('background.jpg');
+    background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 1rem;
   }
 
   button {

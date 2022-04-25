@@ -5,7 +5,7 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 3rem;
-  gap: 3rem;
+  gap: 1rem;
   background-color: #2f136d;
   border-radius: 8px;
   padding: 1rem;
@@ -20,19 +20,33 @@ export const Container = styled.div`
 
     > span {
       font-family: 'Roboto', sans-serif;
-      font-size: 1.25rem;
+      font-size: 0.75rem;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     > strong {
-      font-family: 'Roboto', sans-serif;
-      font-size: 2rem;
+      font-size: 1.5rem;
       font-weight: bold;
       display: block;
       margin-top: 0.5rem;
       line-height: 1.5rem;
+    }
+  }
+
+  @media (min-width: 640px) {
+    gap: 3rem;
+
+    > div {
+      > span {
+        font-size: 1.25rem;
+      }
+
+      > strong {
+        font-size: 2rem;
+        line-height: 1.5rem;
+      }
     }
   }
 `;
