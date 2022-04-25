@@ -96,7 +96,7 @@ function App() {
 
         setGameOver(true);
       } else {
-        hasWinner(currentBoard);
+        return hasWinner(currentBoard);
       }
 
       return tie;
@@ -112,13 +112,9 @@ function App() {
         index === idx ? 'x' : square,
       );
 
-      const draw = handleDraw(currentBoard);
+      const gameIsOver = handleDraw(currentBoard);
 
-      if (draw) return;
-
-      const xWon = hasWinner(currentBoard);
-
-      if (xWon) return;
+      if (gameIsOver) return;
 
       session.consult(minimax, {
         success() {
